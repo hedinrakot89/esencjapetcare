@@ -150,6 +150,5 @@ async function placeOrder(){
   const subtotal = cartTotal();
   const shipping = subtotal >= FREE_SHIPPING_FROM ? 0 : SHIPPING_COST;
   const nr = "EPC-" + Math.floor(10000 + Math.random()*89999);
-  const payload = {
-    order: nr, customer: data, items: items,
-    subtotal: +subtotal.toFixed(2), shipping: +shipp
+  const shipLabel = {inpost:"Paczkomat InPost", kurier:"Kurier DPD"}[data.ship] || data.ship;
+  const payLabel  = {bl
