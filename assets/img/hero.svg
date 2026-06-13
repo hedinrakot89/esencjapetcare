@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 480">
+  <rect width="600" height="480" rx="16" fill="#fffdf8"/>
+  <circle cx="470" cy="110" r="70" fill="#f3ead6"/>
+  <g stroke="#4a3a26" stroke-width="3" fill="#fffdf8">
+    <rect x="120" y="160" width="90" height="220" rx="12"/>
+    <rect x="138" y="118" width="54" height="42" rx="5"/>
+    <rect x="250" y="130" width="80" height="250" rx="10"/>
+    <rect x="272" y="84" width="36" height="46" rx="4"/>
+    <rect x="365" y="190" width="95" height="190" rx="40"/>
+    <rect x="392" y="150" width="40" height="40" rx="6"/>
+  </g>
+  <g fill="#e7d3a8">
+    <rect x="132" y="220" width="66" height="110" rx="4"/>
+    <rect x="260" y="190" width="60" height="140" rx="4"/>
+    <rect x="378" y="240" width="69" height="100" rx="4"/>
+  </g>
+  <text x="165" y="280" text-anchor="middle" font-family="Georgia,serif" font-size="14" font-weight="bold" fill="#4a3a26">Balm</text>
+  <text x="290" y="265" text-anchor="middle" font-family="Georgia,serif" font-size="13" font-weight="bold" fill="#4a3a26">Dental</text>
+  <text x="412" y="295" text-anchor="middle" font-family="Georgia,serif" font-size="13" font-weight="bold" fill="#4a3a26">Szampon</text>
+  <g fill="#4a3a26" opacity=".85">
+    <ellipse cx="80" cy="80" rx="14" ry="11"/>
+    <circle cx="62" cy="62" r="6"/><circle cx="76" cy="54" r="6"/><circle cx="92" cy="56" r="6"/><circle cx="102" cy="68" r="5"/>
+  </g>
+  <g fill="#4a3a26" opacity=".5">
+    <ellipse cx="530" cy="400" rx="12" ry="9"/>
+    <circle cx="515" cy="385" r="5"/><circle cx="527" cy="378" r="5"/><circle cx="540" cy="380" r="5"/><circle cx="549" cy="390" r="4"/>
+  </g>
+  <text x="300" y="445" text-anchor="middle" font-family="Arial" font-size="13" fill="#7a6648">Tu wstaw zdjęcie produktów — assets/img/hero.jpg</text>
+</svg>

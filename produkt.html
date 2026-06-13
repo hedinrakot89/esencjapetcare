@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Produkt — Esencja Pet Care</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Lato:wght@400;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="topbar">🚚 Darmowa dostawa od 149 zł &nbsp;•&nbsp; 🐾 Gratis-próbka w każdej paczce</div>
+
+<header class="site">
+  <div class="nav">
+    <a href="index.html" class="logo">
+      <span class="name">Esencja</span>
+      <span class="sub">Pet Care</span>
+    </a>
+    <nav class="menu">
+      <a href="index.html">Strona główna</a>
+      <a href="sklep.html" class="active">Sklep</a>
+      <a href="o-nas.html">O nas</a>
+      <a href="kontakt.html">Kontakt</a>
+    </nav>
+    <div class="nav-actions">
+      <a href="koszyk.html" class="cart-btn" aria-label="Koszyk">🛒<span class="cart-count">0</span></a>
+      <button class="burger" aria-label="Menu">☰</button>
+    </div>
+  </div>
+</header>
+
+<section style="padding-top:0">
+  <div class="container prod-layout" id="prod"></div>
+</section>
+
+<section style="padding-top:0">
+  <div class="container">
+    <h2 class="sec-title">Może też polubicie</h2>
+    <p class="sec-sub">Inne produkty Esencja Pet Care</p>
+    <div class="grid" id="related-grid"></div>
+  </div>
+</section>
+
+<footer>
+  <div class="foot-bottom">© 2026 Esencja Pet Care · <a href="index.html">Strona główna</a> · <a href="sklep.html">Sklep</a></div>
+</footer>
+
+<script src="js/products.js"></script>
+<script src="js/app.js"></script>
+<script>
+const params = new URLSearchParams(location.search);
+const prod = PRODUCTS.find(p=>p.id===params.get("id")) || PRODUCTS[0];
+document.title = prod.name + " (" + prod.namePl + ") — Esencja Pet Care";
+
+// SEO: dynamic meta description + Product schema
+const md = document.createElement("meta");
+md.name = "description";
+md.content = prod.namePl + " " + prod.volume + " — " + prod.short + " Naturalne kosmetyki dla psów i kotów Esencja Pet Care. Cena: " + money(prod.price) + ".";
+document.head.appendChild(md);
+const ld = document.createElement("script");
+ld.type = "application/ld+json";
+ld.textContent = JSON.stringify({
+  "@context":"https://schema.org","@type":"Product",
+  "name":prod.name,"description":prod.long,"image":prod.img,
+  "brand":{"@type":"Brand","name":"Esencja Pet Care"},
+  "offers":{"@type":"Offer","priceCurrency":"PLN","price":prod.price.toFixed(2),"availability":"https://schema.org/InStock"}
+});
+document.head.appendChild(ld);
+
+document.getElementById("prod").innerHTML = `
+  <div class="prod-gallery">
+    ${prod.badge ? `<span class="badge ${prod.badgeClass}">${prod.badge}</span>` : ""}
+    <img src="${prod.img}" alt="${prod.name}"
+         onerror="this.onerror=null;this.src='assets/img/placeholder.svg'">
+  </div>
+  <div class="prod-info">
+    <h1>${prod.name}</h1>
+    <div class="sub-pl">${prod.namePl} · ${prod.volume}</div>
+    <div class="attrs">${prod.attrs.map(a=>`<span class="attr">✓ ${a}</span>`).join("")}</div>
+    <p class="desc-long">${prod.long}</p>
+    <div class="price">${prod.oldPrice ? `<s class="old-price">${money(prod.oldPrice)}</s> ` : ""}${money(prod.price)}</div>
+    <div class="qty-row">
+      <div class="qty">
+        <button onclick="chQty(-1)">−</button>
+        <input id="qty" value="1" readonly>
+        <button onclick="chQty(1)">+</button>
+      </div>
+      <button class="btn" onclick="addToCart(prod.id, parseInt(document.get

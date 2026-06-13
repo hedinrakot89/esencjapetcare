@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Koszyk — Esencja Pet Care</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Lato:wght@400;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="topbar">🚚 Darmowa dostawa od 149 zł &nbsp;•&nbsp; 🐾 Gratis-próbka w każdej paczce</div>
+
+<header class="site">
+  <div class="nav">
+    <a href="index.html" class="logo">
+      <span class="name">Esencja</span>
+      <span class="sub">Pet Care</span>
+    </a>
+    <nav class="menu">
+      <a href="index.html">Strona główna</a>
+      <a href="sklep.html">Sklep</a>
+      <a href="o-nas.html">O nas</a>
+      <a href="kontakt.html">Kontakt</a>
+    </nav>
+    <div class="nav-actions">
+      <a href="koszyk.html" class="cart-btn active" aria-label="Koszyk">🛒<span class="cart-count">0</span></a>
+      <button class="burger" aria-label="Menu">☰</button>
+    </div>
+  </div>
+</header>
+
+<div class="page-head">
+  <h1>Twój koszyk</h1>
+  <p>Sprawdź zamówienie i wybierz dostawę</p>
+</div>
+
+<section style="padding-top:0">
+  <div class="container" id="cart-root"></div>
+</section>
+
+<footer>
+  <div class="foot-bottom">© 2026 Esencja Pet Care · <a href="sklep.html">Wróć do sklepu</a></div>
+</footer>
+
+<script src="js/products.js"></script>
+<script src="js/app.js"></script>
+<script>
+function renderCart(){
+  const root = document.getElementById("cart-root");
+  const cart = getCart();
+  const entries = Object.entries(cart);
+
+  if(entries.length === 0){
+    root.innerHTML = `
+      <div class="empty-cart">
+        <div class="ico">🐕</div>
+        <h2 class="serif">Koszyk jest pusty…</h2>
+        <p style="margin:10px 0 24px;color:var(--brown-soft)">a Twój pupil już merda ogonem z niecierpliwości!</p>
+        <a href="sklep.html" class="btn">Przejdź do sklepu</a>
+      </div>`;
+    return;
+  }
+
+  const itemsHtml = entries.map(([id,qty])=>{
+    const p = PRODUCTS.find(p=>p.id===id);
+    if(!p) return "";
+    return `
+    <div class="cart-item">
+      <a class="thumb" href="produkt.html?id=${p.id}">
+        <img src="${p.img}" alt="${p.name}" onerror="this.onerror=null;this.src='assets/img/placeholder.svg'">
+      </a>
+      <div>
+        <h4>${p.name}</h4>
+        <div class="unit">${p.namePl} · ${p.volume} · ${money(p.price)}/szt.</div>
+        <button class="remove" onclick="removeFromCart('${p.id}');renderCart()">Usuń</button>
+      </div>
+      <div class="line-right">
+        <div class="qty">
+          <button onclick="setQty('${p.id}',${qty-1});renderCart()">−</button>
+          <input value="${qty}" readonly>
+          <button onclick="setQty('${p.id}',${qty+1});renderCart()">+</button>
+        </div>
+        <b>${money(p.price*qty)}</b>
+      </div>
+    </div>`;
+  }).join("");
+
+  const subtotal = cartTotal();
+  const freeShip = subtotal >= FREE_SHIPPING_FROM;
+  const shipping = freeShip ? 0 : SHIPPING_COST;
+  const missing = FREE_SHIPPING_FROM - subtotal;
+
+  root.innerHTML = `
+  <div class="cart-layout">
+    <div>
+      <div class="cart-items">${itemsHtml}</div>
+
+      <div class="checkout-box">
+        <h3 class="serif">Dane do wysyłki</h3>
+        <form id="order-form" class="form-grid">
+          <div><label class="fl">Imię i nazwisko *</label><input class="fi" required name="name"></div>
+          <div><label class="fl">E-mail *</label><input class="fi" type="email" required name="email"></div>
+          <div><label class="fl">Telefon *</label><input class="fi" type="tel" required name="phone"></div>
+          <div><label class="fl">Kod pocztowy *</label><input class="fi" required name="zip" placeholder="00-000"></div>
+          <div class="full"><label class="fl">Ulica i numer *</label><input class="fi" required name="street"></div>
+          <div class="full"><label class="fl">Miasto *</label><input class="fi" required name="city"></div>
+
+          <div class="full">
+            <label class="fl">Dostawa</label>
+            <fieldset class="opts">
+              <label><input type="radio" name="ship" value="inpost" checked> 📦 Paczkomat InPost — ${freeShip ? "0,00 zł" : money(SHIPPING_COST)}</label>
+              <label><input type="radio" name="ship" value="kurier"> 🚚 Kurier DPD — ${freeShip ? "0,00 zł" : money(SHIPPING_COST)}</label>
+            </fieldset>
+          </div>
+          <div class="full">
+            <label class="fl">Płatność</label>
+            <fieldset class="opts">
+              <label><input type="radio" name="pay" value="blik" checked> 📱 BLIK</label>
+              <label><input type="radio" name="pay" value="przelewy24"> 💳 Przelewy24 / karta</label>
+              <label><input type="radio" name="pay" value="pobranie"> 💵 Za pobraniem (+5 zł)</label>
+            </fieldset>
+          </div>
+          <div class="full"><label class="fl">Uwagi do zamówienia</label><textarea class="fi" rows="2" name="notes"></textarea></div>
+        </form>
+      </div>
+    </div>
+
+    <div class="summary">
+      <h3 class="serif">Podsumowanie</h3>
+      <div class="sum-row"><span>Wartość produktów</span><b>${money(subtotal)}</b></div>
+      <div class="sum-row"><span>Dostawa</span><b>${freeShip ? "Gratis 🎉" : money(shipping)}</b></div>
+      ${freeShip ? "" : `<div class="free-ship-note">Dodaj produkty za ${money(missing)}, aby zyskać darmową dostawę!</div>`}
+      <div class="sum-row total"><span>Razem</span><span>${money(subtotal+shipping)}</span></div>
+      <button class="btn wide" id="order-btn" style="margin-top:18px" onclick="placeOrder()">Zamawiam i płacę</button>
+      <p style="font-size:.75rem;color:var(--brown-soft);margin-top:12px">Składając zamówienie akceptujesz regulamin sklepu. (Wersja demo — płatność nie jest jeszcze podłączona.)</p>
+    </div>
+  </div>`;
+}
+
+async function placeOrder(){
+  const form = document.getElementById("order-form");
+  if(!form.reportValidity()) return;
+  const data = Object.fromEntries(new FormData(form).entries());
+  const cart = getCart();
+  const items = Object.entries(cart).map(([id,qty])=>{
+    const p = PRODUCTS.find(p=>p.id===id);
+    return p ? {name:p.name+" ("+p.volume+")", qty:qty, price:p.price, sum:+(p.price*qty).toFixed(2)} : null;
+  }).filter(Boolean);
+  const subtotal = cartTotal();
+  const shipping = subtotal >= FREE_SHIPPING_FROM ? 0 : SHIPPING_COST;
+  const nr = "EPC-" + Math.floor(10000 + Math.random()*89999);
+  const payload = {
+    order: nr, customer: data, items: items,
+    subtotal: +subtotal.toFixed(2), shipping: +shipp

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kontakt — Esencja Pet Care</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Lato:wght@400;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="topbar">🚚 Darmowa dostawa od 149 zł &nbsp;•&nbsp; 🐾 Gratis-próbka w każdej paczce</div>
+
+<header class="site">
+  <div class="nav">
+    <a href="index.html" class="logo">
+      <span class="name">Esencja</span>
+      <span class="sub">Pet Care</span>
+    </a>
+    <nav class="menu">
+      <a href="index.html">Strona główna</a>
+      <a href="sklep.html">Sklep</a>
+      <a href="o-nas.html">O nas</a>
+      <a href="kontakt.html" class="active">Kontakt</a>
+    </nav>
+    <div class="nav-actions">
+      <a href="koszyk.html" class="cart-btn" aria-label="Koszyk">🛒<span class="cart-count">0</span></a>
+      <button class="burger" aria-label="Menu">☰</button>
+    </div>
+  </div>
+</header>
+
+<div class="page-head">
+  <h1>Kontakt</h1>
+  <p>Odpowiadamy zwykle w ciągu 24 godzin</p>
+</div>
+
+<section style="padding-top:0">
+  <div class="container contact-grid">
+    <div>
+      <div class="contact-card">
+        <h3 class="serif">📧 Napisz do nas</h3>
+        <p>info@esencjapetcare.eu</p>
+      </div>
+      <div class="contact-card">
+        <h3 class="serif">📱 Zadzwoń</h3>
+        <p>+48 728 005 821<br><small>pon.–pt. 9:00–17:00</small></p>
+      </div>
+      <div class="contact-card">
+        <h3 class="serif">📍 Adres</h3>
+        <p>Esencja Pet Care<br>Tomasza Prylińskiego 34/3<br>30-373 Kraków, Polska</p>
+      </div>
+      <div class="contact-card">
+        <h3 class="serif">🐾 Social media</h3>
+        <p><a href="https://www.instagram.com/esencjapetcare" target="_blank" rel="noopener" style="text-decoration:underline">Instagram @esencjapetcare</a></p>
+      </div>
+    </div>
+    <div class="contact-card">
+      <h3 class="serif">Formularz kontaktowy</h3>
+      <form onsubmit="event.preventDefault();toast('Wiadomość wysłana! Odpowiemy wkrótce 🐾');this.reset();" style="display:flex;flex-direction:column;gap:12px;margin-top:10px">
+        <div><label class="fl">Imię *</label><input class="fi" required></div>
+        <div><label class="fl">E-mail *</label><input class="fi" type="email" required></div>
+        <div><label class="fl">Temat</label>
+          <select class="fi">
+            <option>Pytanie o produkt</option>
+            <option>Zamówienie i dostawa</option>
+            <option>Zwrot / reklamacja</option>
+            <option>Współpraca</option>
+            <option>Inne</option>
+          </select>
+        </div>
+        <div><label class="fl">Wiadomość *</label><textarea class="fi" rows="5" required></textarea></div>
+        <button class="btn" type="submit">Wyślij wiadomość</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="foot-bottom">© 2026 Esencja Pet Care · <a href="index.html">Strona główna</a> �
