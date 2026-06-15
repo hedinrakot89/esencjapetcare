@@ -86,4 +86,30 @@ document.getElementById("prod").innerHTML = `
         <input id="qty" value="1" readonly>
         <button onclick="chQty(1)">+</button>
       </div>
-      <button class="btn" onclick="addToCart(prod.id, parseInt(document.get
+      <button class="btn" onclick="addToCart(prod.id, parseInt(document.getElementById('qty').value))">Dodaj do koszyka 🐾</button>
+    </div>
+    <div class="accordion">
+      <details class="acc-item" open>
+        <summary>Skład</summary>
+        <div class="acc-body">${prod.ingredients}</div>
+      </details>
+      <details class="acc-item">
+        <summary>Sposób użycia</summary>
+        <div class="acc-body">${prod.usage}</div>
+      </details>
+      <details class="acc-item">
+        <summary>Dostawa i zwroty</summary>
+        <div class="acc-body">Wysyłka w 24 h (InPost, kurier). Darmowa dostawa od 149 zł. Masz 14 dni na zwrot bez podawania przyczyny.</div>
+      </details>
+    </div>
+  </div>`;
+
+function chQty(d){
+  const el = document.getElementById("qty");
+  el.value = Math.max(1, parseInt(el.value)+d);
+}
+
+renderGrid("related-grid", PRODUCTS.filter(p=>p.id!==prod.id));
+</script>
+</body>
+</html>

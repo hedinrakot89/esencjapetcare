@@ -207,4 +207,17 @@ fieldset.opts label:has(input:checked){border-color:var(--accent);outline:1px so
 
 /* ---- toast ---- */
 #toast{position:fixed;bottom:26px;left:50%;transform:translateX(-50%) translateY(120px);background:var(--brown);color:var(--cream);padding:13px 28px;border-radius:40px;font-size:.92rem;box-shadow:var(--shadow);transition:.35s;z-index:99}
-#toast.show{transform:translateX(-50%) tra
+#toast.show{transform:translateX(-50%) translateY(0)}
+
+/* ---- responsive ---- */
+@media(max-width:900px){
+  .hero-inner,.about-grid,.prod-layout,.cart-layout,.contact-grid{grid-template-columns:1fr}
+  .why-grid,.rev-grid{grid-template-columns:1fr}
+  .trust-grid{grid-template-columns:repeat(2,1fr)}
+  .foot-grid{grid-template-columns:1fr 1fr}
+  nav.menu{display:none;position:absolute;top:100%;left:0;right:0;background:var(--white);flex-direction:column;gap:0;padding:10px 24px 18px;box-shadow:0 10px 20px rgba(74,58,38,.12)}
+  nav.menu.open{display:flex}
+  nav.menu a{padding:12px 0;border-bottom:1px solid var(--cream-2)}
+  .burger{display:block}
+  .form-grid{grid-template-columns:1fr}
+}

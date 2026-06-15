@@ -72,4 +72,7 @@ document.addEventListener("DOMContentLoaded", ()=>{
   const burger = document.querySelector(".burger");
   if(burger){
     burger.addEventListener("click", ()=>{
-      document
+      document.querySelector("nav.menu").classList.toggle("open");
+    });
+  }
+});

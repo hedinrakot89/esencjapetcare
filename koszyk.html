@@ -151,4 +151,55 @@ async function placeOrder(){
   const shipping = subtotal >= FREE_SHIPPING_FROM ? 0 : SHIPPING_COST;
   const nr = "EPC-" + Math.floor(10000 + Math.random()*89999);
   const shipLabel = {inpost:"Paczkomat InPost", kurier:"Kurier DPD"}[data.ship] || data.ship;
-  const payLabel  = {bl
+  const payLabel  = {blik:"BLIK", przelewy24:"Przelewy24 / karta", pobranie:"Za pobraniem"}[data.pay] || data.pay;
+  const itemsText = items.map(it => `• ${it.name} — ${it.qty} szt. × ${money(it.price)} = ${money(it.sum)}`).join("\n");
+  const total = +(subtotal+shipping).toFixed(2);
+  const payload = {
+    _subject: `Nowe zamówienie ${nr} — ${money(total)}`,
+    _template: "table",
+    _captcha: "false",
+    _autoresponse: `Dziękujemy za zamówienie ${nr} w Esencja Pet Care! 🐾 Skontaktujemy się z Tobą w sprawie płatności i wysyłki. Esencja Pet Care · info@esencjapetcare.eu`,
+    "Numer zamówienia": nr,
+    name: data.name,
+    email: data.email,
+    "Telefon": data.phone,
+    "Adres": `${data.street}, ${data.zip} ${data.city}`,
+    "Dostawa": shipLabel,
+    "Płatność": payLabel,
+    "Produkty": itemsText,
+    "Wartość produktów": money(subtotal),
+    "Koszt dostawy": money(shipping),
+    "RAZEM": money(total),
+    "Uwagi": data.notes || "—"
+  };
+  const btn = document.getElementById("order-btn");
+  btn.disabled = true; btn.textContent = "Wysyłanie zamówienia…";
+  try{
+    const res = await fetch("https://formsubmit.co/ajax/info@esencjapetcare.eu", {
+      method: "POST",
+      headers: {"Content-Type":"application/json", "Accept":"application/json"},
+      body: JSON.stringify(payload)
+    });
+    const out = await res.json();
+    if(!res.ok || !(out.success === true || out.success === "true")) throw new Error("send failed");
+    clearCart();
+    const root = document.getElementById("cart-root");
+    root.innerHTML = `
+      <div class="order-ok">
+        <div class="ico">🎉🐾</div>
+        <h2 class="serif">Dziękujemy za zamówienie!</h2>
+        <p>Numer zamówienia: <b>${nr}</b></p>
+        <p style="color:var(--brown-soft);margin:10px 0 24px">Potwierdzenie wysłaliśmy na Twój e-mail. Skontaktujemy się w sprawie płatności i wysyłki!</p>
+        <a href="sklep.html" class="btn">Wróć do sklepu</a>
+      </div>`;
+    window.scrollTo({top:0,behavior:"smooth"});
+  }catch(e){
+    btn.disabled = false; btn.textContent = "Zamawiam i płacę";
+    toast("Nie udało się wysłać 😿 Napisz: info@esencjapetcare.eu");
+  }
+}
+
+renderCart();
+</script>
+</body>
+</html>

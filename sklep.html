@@ -51,4 +51,35 @@
 <section class="seo-text" style="padding-top:20px">
   <div class="container">
     <h2 class="serif" style="font-size:1.4rem;margin-bottom:14px">Kosmetyki dla psa — naturalna pielęgnacja od łap po świeży oddech</h2>
-    <p>W sklepie Esencja Pet Care znajdziesz kompletną <b>pielęgnację dla psa i kota</b>: <b>naturalny szampon dla psa</b> z rycynoleinianem cynku, który pochłania nawet najtrudniejsze zapachy, <b>ekstradelikatny szampon dla szczeniaka</b> z ekstraktem z owsa i nagietka, <b>balsam regenerujący do łap i nosa</b> na bazie oleju z pestek winogron i pr
+    <p>W sklepie Esencja Pet Care znajdziesz kompletną <b>pielęgnację dla psa i kota</b>: <b>naturalny szampon dla psa</b> z rycynoleinianem cynku, który pochłania nawet najtrudniejsze zapachy, <b>ekstradelikatny szampon dla szczeniaka</b> z ekstraktem z owsa i nagietka, <b>balsam regenerujący do łap i nosa</b> na bazie oleju z pestek winogron i propolisu, <b>piankę do czyszczenia łap</b> z silikonową szczoteczką oraz <b>spray dentystyczny dla psów i kotów</b> z erytrytolem i inuliną.</p>
+    <p>Wszystkie kosmetyki są <b>wegańskie</b>, oparte na <b>składnikach pochodzenia naturalnego</b> i produkowane w UE. Darmowa dostawa od 149 zł, wysyłka w 24 h, 14 dni na zwrot.</p>
+  </div>
+</section>
+
+<footer>
+  <div class="foot-bottom">© 2026 Esencja Pet Care · <a href="index.html">Strona główna</a> · <a href="kontakt.html">Kontakt</a> · <a href="regulamin.html">Regulamin</a></div>
+</footer>
+
+<script src="js/products.js"></script>
+<script src="js/app.js"></script>
+<script>
+function filterShop(cat){
+  renderGrid("shop-grid", cat==="all" ? PRODUCTS : PRODUCTS.filter(p=>p.category===cat));
+}
+document.querySelectorAll(".chip").forEach(ch=>{
+  ch.addEventListener("click", ()=>{
+    document.querySelectorAll(".chip").forEach(c=>c.classList.remove("active"));
+    ch.classList.add("active");
+    filterShop(ch.dataset.cat);
+  });
+});
+filterShop("all");
+// obsługa kotwicy z linków stopki (#pielegnacja itd.)
+const hash = location.hash.replace("#","");
+if(hash){
+  const chip = document.querySelector(`.chip[data-cat="${hash}"]`);
+  if(chip) chip.click();
+}
+</script>
+</body>
+</html>
