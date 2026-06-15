@@ -57,11 +57,11 @@
     </div>
     <div class="contact-card">
       <h3 class="serif">Formularz kontaktowy</h3>
-      <form onsubmit="event.preventDefault();toast('Wiadomość wysłana! Odpowiemy wkrótce 🐾');this.reset();" style="display:flex;flex-direction:column;gap:12px;margin-top:10px">
-        <div><label class="fl">Imię *</label><input class="fi" required></div>
-        <div><label class="fl">E-mail *</label><input class="fi" type="email" required></div>
+      <form id="contact-form" style="display:flex;flex-direction:column;gap:12px;margin-top:10px">
+        <div><label class="fl">Imię *</label><input class="fi" required name="Imię"></div>
+        <div><label class="fl">E-mail *</label><input class="fi" type="email" required name="email"></div>
         <div><label class="fl">Temat</label>
-          <select class="fi">
+          <select class="fi" name="Temat">
             <option>Pytanie o produkt</option>
             <option>Zamówienie i dostawa</option>
             <option>Zwrot / reklamacja</option>
@@ -69,8 +69,8 @@
             <option>Inne</option>
           </select>
         </div>
-        <div><label class="fl">Wiadomość *</label><textarea class="fi" rows="5" required></textarea></div>
-        <button class="btn" type="submit">Wyślij wiadomość</button>
+        <div><label class="fl">Wiadomość *</label><textarea class="fi" rows="5" required name="Wiadomość"></textarea></div>
+        <button class="btn" type="submit" id="contact-btn">Wyślij wiadomość</button>
       </form>
     </div>
   </div>
@@ -82,5 +82,5 @@
 
 <script src="js/products.js"></script>
 <script src="js/app.js"></script>
-</body>
-</html>
+<script>
+document.getEleme
