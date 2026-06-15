@@ -83,4 +83,34 @@
 <script src="js/products.js"></script>
 <script src="js/app.js"></script>
 <script>
-document.getEleme
+document.getElementById("contact-form").addEventListener("submit", async (e)=>{
+  e.preventDefault();
+  const form = e.target;
+  if(!form.reportValidity()) return;
+  const data = Object.fromEntries(new FormData(form).entries());
+  const btn = document.getElementById("contact-btn");
+  btn.disabled = true; btn.textContent = "Wysyłanie…";
+  try{
+    const res = await fetch("https://formsubmit.co/ajax/agathamwangemi06@gmail.com", {
+      method: "POST",
+      headers: {"Content-Type":"application/json", "Accept":"application/json"},
+      body: JSON.stringify({
+        _subject: "Nowa wiadomość z formularza kontaktowego — Esencja Pet Care",
+        _template: "table",
+        _captcha: "false",
+        ...data
+      })
+    });
+    const out = await res.json();
+    if(!res.ok || !(out.success === true || out.success === "true")) throw new Error("send failed");
+    form.reset();
+    btn.disabled = false; btn.textContent = "Wyślij wiadomość";
+    toast("Wiadomość wysłana! Odpowiemy wkrótce 🐾");
+  }catch(err){
+    btn.disabled = false; btn.textContent = "Wyślij wiadomość";
+    toast("Nie udało się wysłać 😿 Napisz: info@esencjapetcare.eu");
+  }
+});
+</script>
+</body>
+</html>
