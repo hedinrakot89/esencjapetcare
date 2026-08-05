@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Panel administracyjny — Esencja Pet Care</title>
+<style>
+  :root{--cream:#FBF7F0;--card:#fff;--brown:#4A3728;--brown2:#6b5442;--line:#e9e0d3;--accent:#8a6d4f;--ok:#2e7d52;--bad:#b3402f;}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,Segoe UI,Roboto,Lato,sans-serif;background:var(--cream);color:var(--brown);}
+  header{background:var(--brown);color:#fff;padding:14px 22px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+  header .logo{font-weight:800;font-size:1.15rem;letter-spacing:.5px}
+  header .logo small{display:block;font-size:.6rem;letter-spacing:3px;opacity:.8}
+  .tabs{display:flex;gap:6px;flex-wrap:wrap;margin-left:auto}
+  .tabs button{background:transparent;color:#fff;border:1px solid rgba(255,255,255,.3);padding:8px 14px;border-radius:8px;cursor:pointer;font-size:.9rem}
+  .tabs button.active{background:#fff;color:var(--brown);font-weight:700}
+  main{max-width:1080px;margin:24px auto;padding:0 18px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px;margin-bottom:18px;box-shadow:0 2px 10px rgba(74,55,40,.05)}
+  h1{font-size:1.4rem;margin:.2em 0}
+  h2{font-size:1.15rem;margin:.2em 0 .6em}
+  label{display:block;font-size:.8rem;font-weight:700;margin:10px 0 4px;color:var(--brown2)}
+  input,textarea,select{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:9px;font-size:.92rem;font-family:inherit;background:#fffdf9}
+  textarea{resize:vertical}
+  .btn{background:var(--brown);color:#fff;border:0;padding:11px 18px;border-radius:10px;cursor:pointer;font-weight:700;font-size:.92rem}
+  .btn.sec{background:#fff;color:var(--brown);border:1px solid var(--brown)}
+  .btn.bad{background:var(--bad)}
+  .btn.sm{padding:7px 12px;font-size:.82rem}
+  .btn:disabled{opacity:.5;cursor:default}
+  .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .muted{color:var(--brown2);font-size:.85rem}
+  .plist{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px;margin-top:12px}
+  .pitem{border:1px solid var(--line);border-radius:12px;padding:12px;display:flex;gap:12px;background:#fffdf9}
+  .pitem img{width:64px;height:64px;object-fit:cover;border-radius:8px;background:#f0e9dd}
+  .pitem .pname{font-weight:700}
+  .pill{display:inline-block;font-size:.7rem;background:#efe7d9;color:var(--brown2);padding:2px 8px;border-radius:20px;margin-right:4px}
+  .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--brown);color:#fff;padding:12px 18px;border-radius:10px;opacity:0;transition:.3s;pointer-events:none;max-width:90%;z-index:99}
+  .toast.show{opacity:1}
+  .toast.bad{background:var(--bad)}
+  .modal{position:fixed;inset:0;background:rgba(40,28,18,.55);display:none;align-items:flex-start;justify-content:center;padding:24px;overflow:auto;z-index:50}
+  .modal.show{display:flex}
+  .modal .card{max-width:640px;width:100%;margin-top:20px}
+  iframe{width:100%;height:640px;border:1px solid var(--line);border-radius:12px;background:#fff}
+  code{background:#efe7d9;padding:2px 6px;border-radius:5px;font-size:.85rem}
+  .hidden{display:none}
+  ol{padding-left:20px}li{margin:6px 0}
+</style>
+</head>
+<body>
+
+<!-- ===== GATE ===== -->
+<div id="gate" class="card" style="max-width:420px;margin:80px auto">
+  <div class="logo" style="color:var(--brown);font-weight:800;font-size:1.3rem">Esencja <small style="letter-spacing:3px;font-size:.6rem">PANEL ADMINA</small></div>
+  <p class="muted">Wprowadź hasło dostępu.</p>
+  <label>Hasło</label>
+  <input id="gatePw" type="password" onkeydown="if(event.key==='Enter')doGate()" autocomplete="off">
+  <div class="row" style="margin-top:12px"><button class="btn" onclick="doGate()">Dalej</button><span class="muted" id="gateMsg"></span></div>
+</div>
+
+<!-- ===== LOGIN ===== -->
+<div id="login" class="card hidden" style="max-width:520px;margin:60px auto">
+  <div class="logo" style="color:var(--brown);font-weight:800;font-size:1.3rem">Esencja <small style="letter-spacing:3px;font-size:.6rem">PANEL ADMINA</small></div>
+  <p class="muted">Zaloguj się swoim tokenem GitHub, aby zarządzać produktami. Token zapisuje się tylko w tej przeglądarce.</p>
+  <label>GitHub token</label>
+  <input id="tokenInput" type="password" placeholder="github_pat_..." autocomplete="off">
+  <div class="row" style="margin-top:12px">
+    <button class="btn" onclick="doLogin()">Zaloguj</button>
+    <span class="muted" id="loginMsg"></span>
+  </div>
+  <details style="margin-top:14px"><summary class="muted" style="cursor:pointer">Jak utworzyć token?</summary>
+    <ol class="muted">
+      <li>GitHub → Settings → Developer settings → <b>Fine-grained tokens</b> → Generate new token.</li>
+      <li>Repository access → Only select repositories → <b>hedinrakot89/esencjapetcare</b>.</li>
+      <li>Permissions → Repository → <b>Contents: Read and write</b>.</li>
+      <li>Skopiuj token i wklej powyżej.</li>
+    </ol>
+  </details>
+</div>
+
+<!-- ===== APP ===== -->
+<div id="app" class="hidden">
+<header>
+  <div class="logo">Esencja <small>PANEL ADMINA</small></div>
+  <div class="tabs">
+    <button data-tab="produkty" class="active" onclick="tab('produkty')">Produkty</button>
+    <button data-tab="zamowienia" onclick="tab('zamowienia')">Zamówienia</button>
+    <button data-tab="statystyka" onclick="tab('statystyka')">Statystyka</button>
+    <button data-tab="ustawienia" onclick="tab('ustawienia')">Ustawienia</button>
+    <button onclick="logout()">Wyloguj</button>
+  </div>
+</header>
+<main>
+
+  <!-- PRODUKTY -->
+  <section id="tab-produkty">
+    <div class="card">
+      <div class="row" style="justify-content:space-between">
+        <h1 style="margin:0">Produkty</h1>
+        <div class="row">
+          <button class="btn sec sm" onclick="loadProducts()">Odśwież z GitHub</button>
+          <button class="btn sm" onclick="editProduct(null)">+ Dodaj produkt</button>
+        </div>
+      </div>
+      <p class="muted" id="pStatus">Ładowanie…</p>
+      <div id="pList" class="plist"></div>
+      <div class="row" style="margin-top:16px">
+        <button class="btn" id="publishBtn" onclick="publishProducts()">Opublikuj zmiany na stronie</button>
+        <span class="muted">Zmiany trafiają na żywy sklep w ~1 minutę.</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ZAMÓWIENIA -->
+  <section id="tab-zamowienia" class="hidden">
+    <div class="card">
+      <h1>Zamówienia i wiadomości</h1>
+      <p class="muted">Wszystkie zgłoszenia z formularzy trafiają do arkusza Google. Wklej link do opublikowanego arkusza, aby zobaczyć listę tutaj.</p>
+      <label>Link do arkusza Google (Publish to web / udostępniony)</label>
+      <div class="row"><input id="sheetUrl" placeholder="https://docs.google.com/spreadsheets/d/.../pubhtml"><button class="btn sm" onclick="saveSheet()">Zapisz</button></div>
+      <div id="sheetBox" style="margin-top:14px"></div>
+    </div>
+  </section>
+
+  <!-- STATYSTYKA -->
+  <section id="tab-statystyka" class="hidden">
+    <div class="card">
+      <h1>Statystyka odwiedzin</h1>
+      <p class="muted">Licznik GoatCounter (darmowy). Wpisz swój kod (np. <code>esencjapetcare</code> z adresu esencjapetcare.goatcounter.com).</p>
+      <label>Kod GoatCounter</label>
+      <div class="row"><input id="gcCode" placeholder="esencjapetcare"><button class="btn sm" onclick="saveGC()">Zapisz</button></div>
+      <div id="gcBox" style="margin-top:14px"></div>
+    </div>
+  </section>
+
+  <!-- USTAWIENIA -->
+  <section id="tab-ustawienia" class="hidden">
+    <div class="card">
+      <h1>Ustawienia</h1>
+      <p class="muted">Repozytorium: <code>hedinrakot89/esencjapetcare</code> · gałąź <code>main</code></p>
+      <p class="muted">Token jest przechowywany lokalnie w tej przeglądarce i nigdy nie trafia do kodu strony.</p>
+      <button class="btn bad sm" onclick="logout()">Wyloguj i usuń token z tej przeglądarki</button>
+    </div>
+  </section>
+
+</main>
+</div>
+
+<div id="toast" class="toast"></div>
+
+<!-- EDIT MODAL -->
+<div id="modal" class="modal">
+  <div class="card">
+    <h2 id="modalTitle">Produkt</h2>
+    <div class="grid2">
+      <div><label>ID (bez spacji)</label><input id="f_id"></div>
+      <div><label>Kategoria</label>
+        <select id="f_category">
+          <option value="pielegnacja">Pielęgnacja łap i nosa</option>
+          <option value="higiena">Higiena jamy ustnej</option>
+          <option value="kapiel">Kąpiel</option>
+          <option value="zestaw">Zestaw</option>
+        </select>
+      </div>
+      <div><label>Nazwa (EN)</label><input id="f_name"></div>
+      <div><label>Nazwa PL</label><input id="f_namePl"></div>
+      <div><label>Cena (zł)</label><input id="f_price" type="number" step="0.01"></div>
+      <div><label>Stara cena (opcjonalnie)</label><input id="f_oldPrice" type="number" step="0.01"></div>
+      <div><label>Pojemność</label><input id="f_volume" placeholder="50 ml"></div>
+      <div><label>Etykieta (badge)</label><input id="f_badge" placeholder="Bestseller / Nowość"></div>
+      <div><label>Kolor etykiety</label>
+        <select id="f_badgeClass"><option value="">domyślny (brąz)</option><option value="blue">niebieski</option><option value="green">zielony</option></select>
+      </div>
+      <div><label>Zdjęcie</label><input id="f_imgFile" type="file" accept="image/*"><input id="f_img" placeholder="assets/img/..." style="margin-top:6px"></div>
+    </div>
+    <img id="f_preview" src="" alt="" style="max-height:120px;border-radius:10px;margin-top:8px;display:none">
+    <label>Krótki opis</label><textarea id="f_short" rows="2"></textarea>
+    <label>Pełny opis</label><textarea id="f_long" rows="4"></textarea>
+    <label>Cechy (jedna na linię)</label><textarea id="f_attrs" rows="3"></textarea>
+    <label>Składniki</label><textarea id="f_ingredients" rows="3"></textarea>
+    <label>Stosowanie</label><textarea id="f_usage" rows="3"></textarea>
+    <div class="row" style="margin-top:14px;justify-content:space-between">
+      <button class="btn sec" onclick="closeModal()">Anuluj</button>
+      <button class="btn" id="saveProdBtn" onclick="saveProductForm()">Zapisz produkt</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const GH={owner:"hedinrakot89",repo:"esencjapetcare",branch:"main"};
+let PRODUCTS=[], SHIP={free:149,cost:14.99}, productsSha=null, editIndex=-1;
+
+function token(){return localStorage.getItem("epc_token")||"";}
+function apiUrl(p){return "https://api.github.com/repos/"+GH.owner+"/"+GH.repo+"/"+p;}
+function b64enc(s){return btoa(unescape(encodeURIComponent(s)));}
+function b64dec(b){return decodeURIComponent(escape(atob((b||"").replace(/\n/g,""))));}
+function toast(m,bad){const t=document.getElementById("toast");t.textContent=m;t.className="toast show"+(bad?" bad":"");clearTimeout(t._t);t._t=setTimeout(()=>t.className="toast",bad?4200:2600);}
+
+async function ghGet(path){
+  const r=await fetch(apiUrl("contents/"+path+"?ref="+GH.branch),{headers:{Authorization:"token "+token(),Accept:"application/vnd.github+json"}});
+  if(!r.ok) throw new Error("GET "+path+" → "+r.status);
+  return r.json();
+}
+async function ghPut(path,content,sha,msg,isB64){
+  const body={message:msg,branch:GH.branch,content:isB64?content:b64enc(content)};
+  if(sha)body.sha=sha;
+  const r=await fetch(apiUrl("contents/"+path),{method:"PUT",headers:{Authorization:"token "+token(),Accept:"application/vnd.github+json","Content-Type":"application/json"},body:JSON.stringify(body)});
+  if(!r.ok){throw new Error("PUT "+path+" → "+r.status+" "+(await r.text()).slice(0,200));}
+  return r.json();
+}
+
+/* ---- login ---- */
+async function doLogin(){
+  const t=document.getElementById("tokenInput").value.trim();
+  if(!t){document.getElementById("loginMsg").textContent="Wklej token.";return;}
+  localStorage.setItem("epc_token",t);
+  document.getElementById("loginMsg").textContent="Sprawdzam…";
+  try{
+    await ghGet("js/products.js");
+    showApp();
+  }catch(e){
+    localStorage.removeItem("epc_token");
+    document.getElementById("loginMsg").textContent="Token nieprawidłowy lub brak dostępu.";
+  }
+}
+function logout(){localStorage.removeItem("epc_token");location.reload();}
+function showApp(){document.getElementById("login").classList.add("hidden");document.getElementById("app").classList.remove("hidden");loadProducts();initConfig();}
+
+/* ---- tabs ---- */
+function tab(name){
+  ["produkty","zamowienia","statystyka","ustawienia"].forEach(n=>{
+    document.getElementById("tab-"+n).classList.toggle("hidden",n!==name);
+  });
+  document.querySelectorAll(".tabs button[data-tab]").forEach(b=>b.classList.toggle("active",b.dataset.tab===name));
+}
+
+/* ---- products ---- */
+async function loadProducts(){
+  document.getElementById("pStatus").textContent="Ładowanie…";
+  try{
+    const j=await ghGet("js/products.js");
+    productsSha=j.sha;
+    const text=b64dec(j.content);
+    const out=new Function(text+"\nreturn {P:typeof PRODUCTS!=='undefined'?PRODUCTS:[],F:typeof FREE_SHIPPING_FROM!=='undefined'?FREE_SHIPPING_FROM:149,S:typeof SHIPPING_COST!=='undefined'?SHIPPING_COST:14.99};")();
+    PRODUCTS=out.P||[];SHIP.free=out.F;SHIP.cost=out.S;
+    renderList();
+    document.getElementById("pStatus").textContent=PRODUCTS.length+" produktów.";
+  }catch(e){document.getElementById("pStatus").textContent="Błąd: "+e.message;}
+}
+function renderList(){
+  const el=document.getElementById("pList");
+  el.innerHTML=PRODUCTS.map((p,i)=>`
+    <div class="pitem">
+      <img src="/${(p.img||'').replace(/^\//,'')}" onerror="this.style.visibility='hidden'">
+      <div style="flex:1">
+        <div class="pname">${esc(p.name||'')}</div>
+        <div class="muted">${esc(p.namePl||'')}</div>
+        <div style="margin:6px 0"><span class="pill">${esc(p.category||'')}</span>${p.badge?`<span class="pill">${esc(p.badge)}</span>`:''}<b>${(p.price||0).toFixed(2)} zł</b></div>
+        <div class="row"><button class="btn sec sm" onclick="editProduct(${i})">Edytuj</button><button class="btn bad sm" onclick="delProduct(${i})">Usuń</button></div>
+      </div>
+    </div>`).join("");
+}
+function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+
+function editProduct(i){
+  editIndex=i;
+  const p = i===null?{}:PRODUCTS[i];
+  document.getElementById("modalTitle").textContent = i===null?"Nowy produkt":"Edytuj produkt";
+  const g=id=>document.getElementById(id);
+  g("f_id").value=p.id||"";g("f_category").value=p.category||"pielegnacja";g("f_name").value=p.name||"";g("f_namePl").value=p.namePl||"";
+  g("f_price").value=p.price!=null?p.price:"";g("f_oldPrice").value=p.oldPrice!=null?p.oldPrice:"";g("f_volume").value=p.volume||"";
+  g("f_badge").value=p.badge||"";g("f_badgeClass").value=p.badgeClass||"";g("f_img").value=p.img||"";
+  g("f_short").value=p.short||"";g("f_long").value=p.long||"";g("f_attrs").value=(p.attrs||[]).join("\n");
+  g("f_ingredients").value=p.ingredients||"";g("f_usage").value=p.usage||"";
+  const pv=g("f_preview");if(p.img){pv.src="/"+p.img.replace(/^\//,'');pv.style.display="block";}else pv.style.display="none";
+  document.getElementById("modal").classList.add("show");
+}
+function closeModal(){document.getElementById("modal").classList.remove("show");}
+
+document.getElementById("f_imgFile").addEventListener("change",async e=>{
+  const file=e.target.files[0];if(!file)return;
+  toast("Wysyłanie zdjęcia…");
+  try{
+    const name=file.name.toLowerCase().replace(/[^a-z0-9.\-_]/g,"-");
+    const path="assets/img/"+name;
+    const b64=await new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(r.result.split(",")[1]);r.onerror=rej;r.readAsDataURL(file);});
+    let sha=null;try{sha=(await ghGet(path)).sha;}catch(_){}
+    await ghPut(path,b64,sha,"admin: zdjęcie "+name,true);
+    document.getElementById("f_img").value=path;
+    const pv=document.getElementById("f_preview");pv.src="data:image/*;base64,"+b64;pv.style.display="block";
+    toast("Zdjęcie wgrane ✓");
+  }catch(err){toast("Błąd zdjęcia: "+err.message,true);}
+});
+
+function saveProductForm(){
+  const g=id=>document.getElementById(id).value.trim();
+  const id=g("f_id");if(!id){toast("Podaj ID",true);return;}
+  const prod={
+    id:id,name:g("f_name"),namePl:g("f_namePl"),category:g("f_category"),
+    price:parseFloat(g("f_price"))||0,volume:g("f_volume"),
+    badge:g("f_badge"),badgeClass:g("f_badgeClass"),img:g("f_img"),
+    short:g("f_short"),long:g("f_long"),
+    attrs:document.getElementById("f_attrs").value.split("\n").map(s=>s.trim()).filter(Boolean),
+    ingredients:g("f_ingredients"),usage:g("f_usage")
+  };
+  const op=g("f_oldPrice");if(op)prod.oldPrice=parseFloat(op);
+  if(editIndex===null)PRODUCTS.push(prod);else PRODUCTS[editIndex]=prod;
+  closeModal();renderList();
+  toast("Zapisano lokalnie. Kliknij „Opublikuj”, aby wysłać na stronę.");
+}
+function delProduct(i){
+  if(!confirm("Usunąć produkt \""+PRODUCTS[i].name+"\"?"))return;
+  PRODUCTS.splice(i,1);renderList();
+  toast("Usunięto lokalnie. Kliknij „Opublikuj”.");
+}
+function generateJs(){
+  return "// ===== Esencja Pet Care — katalog produktów =====\nconst PRODUCTS = "+JSON.stringify(PRODUCTS,null,2)+";\n\nconst FREE_SHIPPING_FROM = "+SHIP.free+"; // zł\nconst SHIPPING_COST = "+SHIP.cost+";    // zł\n";
+}
+async function publishProducts(){
+  const btn=document.getElementById("publishBtn");btn.disabled=true;btn.textContent="Publikowanie…";
+  try{
+    const res=await ghPut("js/products.js",generateJs(),productsSha,"admin: aktualizacja produktów");
+    productsSha=res.content.sha;
+    toast("Opublikowano ✓ Strona odświeży się za ~1 min.");
+  }catch(e){toast("Błąd publikacji: "+e.message,true);}
+  btn.disabled=false;btn.textContent="Opublikuj zmiany na stronie";
+}
+
+/* ---- orders / stats config (local) ---- */
+function initConfig(){
+  const s=localStorage.getItem("epc_sheet");if(s){document.getElementById("sheetUrl").value=s;renderSheet(s);}
+  const g=localStorage.getItem("epc_gc");if(g){document.getElementById("gcCode").value=g;renderGC(g);}
+}
+function saveSheet(){const u=document.getElementById("sheetUrl").value.trim();localStorage.setItem("epc_sheet",u);renderSheet(u);toast("Zapisano");}
+function renderSheet(u){document.getElementById("sheetBox").innerHTML=u?('<iframe src="'+esc(u)+'"></iframe>'):'<p class="muted">Brak linku. Po skonfigurowaniu arkusza wklej link powyżej.</p>';}
+function saveGC(){const c=document.getElementById("gcCode").value.trim().replace(/\..*$/,'');localStorage.setItem("epc_gc",c);renderGC(c);toast("Zapisano");}
+function renderGC(c){document.getElementById("gcBox").innerHTML=c?('<p><a class="btn sm" target="_blank" href="https://'+esc(c)+'.goatcounter.com">Otwórz statystyki ↗</a></p><iframe src="https://'+esc(c)+'.goatcounter.com"></iframe>'):'<p class="muted">Brak kodu.</p>';}
+
+/* ---- gate ---- */
+const PW_HASH="cfefa0fece62f27a162bf04d24f17503d2eb54069e6a2f3a76118d9983356475";
+async function sha256hex(str){const b=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(str));return [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,"0")).join("");}
+async function doGate(){const pw=document.getElementById("gatePw").value;if(await sha256hex(pw)===PW_HASH){localStorage.setItem("epc_unlocked","1");unlock();}else{document.getElementById("gateMsg").textContent="Nieprawidłowe hasło.";}}
+function unlock(){document.getElementById("gate").classList.add("hidden");if(token()){document.getElementById("tokenInput").value=token();showApp();}else{document.getElementById("login").classList.remove("hidden");}}
+/* ---- boot ---- */
+if(localStorage.getItem("epc_unlocked")==="1"){unlock();}
+</script>
+</body>
+</html>
