@@ -147,6 +147,15 @@ const SPECIAL = [
   [".hero h1", "Natural care<br>your dog deserves 🐾"],
   [".about-grid h2", "The essence of<br>what's natural"]
 ];
+const SEO_EN = {
+  "Naturalne kosmetyki dla psów i kotów — Esencja Pet Care": `<h2 class="serif" style="font-size:1.5rem;margin-bottom:14px">Natural cosmetics for dogs and cats — Esencja Pet Care</h2>
+    <p>Looking for <b>natural dog cosmetics</b> that really work? Esencja Pet Care is a Polish care brand created out of love for animals. Our range includes a <b>natural dog shampoo</b> that neutralises odours, a <b>very gentle puppy shampoo</b> with balanced pH, a <b>dog paw and nose balm</b> for dry, cracked pads, a <b>no-rinse paw-cleaning foam</b> and an <b>oral hygiene spray for dogs and cats</b> that keeps breath fresh without brushing.</p>
+    <p>All our products are built on <b>ingredients of natural origin</b> — free from parabens, silicones and artificial dyes. Esencja cosmetics are <b>vegan</b>, with a <b>balanced pH</b> suited to the skin of dogs and cats, and allergen-free fragrances. Products like the paw balm are <b>safe if licked</b>, so you can use them with peace of mind.</p>
+    <p>Caring for your dog has never been easier: after an autumn walk, the paw foam with its silicone brush is all you need; in winter, a protective balm for pads exposed to road salt and frost; and a daily spritz of dental spray looks after your pet's teeth and gums. Order online with delivery across Poland — <b>free shipping from 149 zł</b>, and a little free gift in every parcel. 🐾</p>`,
+  "Kosmetyki dla psa — naturalna pielęgnacja od łap po świeży oddech": `<h2 class="serif" style="font-size:1.4rem;margin-bottom:14px">Dog cosmetics — natural care from paws to fresh breath</h2>
+    <p>At the Esencja Pet Care shop you'll find complete <b>care for dogs and cats</b>: a <b>natural dog shampoo</b> with zinc ricinoleate that absorbs even the toughest odours, an <b>extra-gentle puppy shampoo</b> with oat and calendula extract, a <b>regenerating paw and nose balm</b> based on grape-seed oil and propolis, a <b>paw-cleaning foam</b> with a silicone brush, and a <b>dental spray for dogs and cats</b> with erythritol and inulin.</p>
+    <p>All cosmetics are <b>vegan</b>, based on <b>ingredients of natural origin</b> and made in the EU. Free shipping from 149 zł, dispatch within 24 h, 14-day returns.</p>`
+};
 function translateEl(root){
   const w=document.createTreeWalker(root, NodeFilter.SHOW_TEXT, null);
   const nodes=[]; while(w.nextNode()) nodes.push(w.currentNode);
@@ -157,6 +166,7 @@ function applyI18n(){
   if(LANG!=="en") return;
   document.documentElement.lang="en";
   SPECIAL.forEach(([sel,html])=>{ const el=document.querySelector(sel); if(el) el.innerHTML=html; });
+  document.querySelectorAll(".seo-text .container").forEach(c=>{ const h=c.querySelector("h2"); if(!h) return; const k=norm(h.textContent); if(SEO_EN[k]) c.innerHTML=SEO_EN[k]; });
   translateEl(document.body);
   const mo=new MutationObserver(muts=>{ muts.forEach(m=>m.addedNodes.forEach(nd=>{ if(nd.nodeType===1) translateEl(nd); else if(nd.nodeType===3){ const k=norm(nd.nodeValue); if(DICT[k]!==undefined) nd.nodeValue=nd.nodeValue.replace(/\S[\s\S]*\S|\S/, DICT[k]); } })); });
   mo.observe(document.body,{childList:true,subtree:true});
