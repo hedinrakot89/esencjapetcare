@@ -336,13 +336,27 @@ function renderSheet(u){document.getElementById("sheetBox").innerHTML=u?('<ifram
 function saveGC(){const c=document.getElementById("gcCode").value.trim().replace(/\..*$/,'');localStorage.setItem("epc_gc",c);renderGC(c);toast("Zapisano");}
 function renderGC(c){document.getElementById("gcBox").innerHTML=c?('<p><a class="btn sm" target="_blank" href="https://'+esc(c)+'.goatcounter.com">Otwórz statystyki ↗</a></p><iframe src="https://'+esc(c)+'.goatcounter.com"></iframe>'):'<p class="muted">Brak kodu.</p>';}
 
-/* ---- gate ---- */
-const PW_HASH="cfefa0fece62f27a162bf04d24f17503d2eb54069e6a2f3a76118d9983356475";
-async function sha256hex(str){const b=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(str));return [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,"0")).join("");}
-async function doGate(){const pw=document.getElementById("gatePw").value;if(await sha256hex(pw)===PW_HASH){localStorage.setItem("epc_unlocked","1");unlock();}else{document.getElementById("gateMsg").textContent="Nieprawidłowe hasło.";}}
-function unlock(){document.getElementById("gate").classList.add("hidden");if(token()){document.getElementById("tokenInput").value=token();showApp();}else{document.getElementById("login").classList.remove("hidden");}}
+/* ---- gate: haslo odszyfrowuje token ---- */
+const ENC={salt:"nDcMzpfpaNRceYbk1iybSw==",iv:"eQNmuL0coMWfJsC9",ct:"JaMcTZ5SkpUW1p3BbTBrudt9jelSryAcL+LNQ1YObqd1ojrVMGyi6pQCuwAx9Okyuuky+RcnhZI=",iter:200000};
+function b64b(x){return Uint8Array.from(atob(x),c=>c.charCodeAt(0));}
+async function decryptToken(pw){
+  const bk=await crypto.subtle.importKey("raw",new TextEncoder().encode(pw),"PBKDF2",false,["deriveKey"]);
+  const key=await crypto.subtle.deriveKey({name:"PBKDF2",salt:b64b(ENC.salt),iterations:ENC.iter,hash:"SHA-256"},bk,{name:"AES-GCM",length:256},false,["decrypt"]);
+  const pt=await crypto.subtle.decrypt({name:"AES-GCM",iv:b64b(ENC.iv)},key,b64b(ENC.ct));
+  return new TextDecoder().decode(pt);
+}
+async function doGate(){
+  const pw=document.getElementById("gatePw").value;
+  const msg=document.getElementById("gateMsg"); msg.textContent="Sprawdzam...";
+  try{
+    const tok=await decryptToken(pw);
+    localStorage.setItem("epc_token",tok);
+    document.getElementById("gate").classList.add("hidden");
+    showApp();
+  }catch(e){ msg.textContent="Nieprawidlowe haslo."; }
+}
 /* ---- boot ---- */
-if(localStorage.getItem("epc_unlocked")==="1"){unlock();}
+if(token()){document.getElementById("gate").classList.add("hidden");showApp();}
 </script>
 </body>
 </html>
