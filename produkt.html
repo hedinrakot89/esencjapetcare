@@ -51,18 +51,19 @@
 <script>
 const params = new URLSearchParams(location.search);
 const prod = PRODUCTS.find(p=>p.id===params.get("id")) || PRODUCTS[0];
-document.title = prod.name + " (" + prod.namePl + ") — Esencja Pet Care";
+const _sub = psub(prod), _long = pf(prod,"long"), _short = pf(prod,"short");
+const _ing = pf(prod,"ingredients"), _use = pf(prod,"usage"), _attrs = (LANG==="en" ? (prod.attrsEn||prod.attrs) : prod.attrs);
+document.title = prod.name + " (" + _sub + ") — Esencja Pet Care";
 
-// SEO: dynamic meta description + Product schema
 const md = document.createElement("meta");
 md.name = "description";
-md.content = prod.namePl + " " + prod.volume + " — " + prod.short + " Naturalne kosmetyki dla psów i kotów Esencja Pet Care. Cena: " + money(prod.price) + ".";
+md.content = _sub + " " + prod.volume + " — " + _short + " " + T("Naturalne kosmetyki dla psów i kotów Esencja Pet Care.","Natural cosmetics for dogs and cats by Esencja Pet Care.") + " " + T("Cena","Price") + ": " + money(prod.price) + ".";
 document.head.appendChild(md);
 const ld = document.createElement("script");
 ld.type = "application/ld+json";
 ld.textContent = JSON.stringify({
   "@context":"https://schema.org","@type":"Product",
-  "name":prod.name,"description":prod.long,"image":prod.img,
+  "name":prod.name,"description":_long,"image":prod.img,
   "brand":{"@type":"Brand","name":"Esencja Pet Care"},
   "offers":{"@type":"Offer","priceCurrency":"PLN","price":prod.price.toFixed(2),"availability":"https://schema.org/InStock"}
 });
@@ -70,15 +71,15 @@ document.head.appendChild(ld);
 
 document.getElementById("prod").innerHTML = `
   <div class="prod-gallery">
-    ${prod.badge ? `<span class="badge ${prod.badgeClass}">${prod.badge}</span>` : ""}
+    ${prod.badge ? `<span class="badge ${prod.badgeClass}">${pbadge(prod)}</span>` : ""}
     <img src="${prod.img}" alt="${prod.name}"
          onerror="this.onerror=null;this.src='assets/img/placeholder.svg'">
   </div>
   <div class="prod-info">
     <h1>${prod.name}</h1>
-    <div class="sub-pl">${prod.namePl} · ${prod.volume}</div>
-    <div class="attrs">${prod.attrs.map(a=>`<span class="attr">✓ ${a}</span>`).join("")}</div>
-    <p class="desc-long">${prod.long}</p>
+    <div class="sub-pl">${_sub} · ${prod.volume}</div>
+    <div class="attrs">${_attrs.map(a=>`<span class="attr">✓ ${a}</span>`).join("")}</div>
+    <p class="desc-long">${_long}</p>
     <div class="price">${prod.oldPrice ? `<s class="old-price">${money(prod.oldPrice)}</s> ` : ""}${money(prod.price)}</div>
     <div class="qty-row">
       <div class="qty">
@@ -86,20 +87,20 @@ document.getElementById("prod").innerHTML = `
         <input id="qty" value="1" readonly>
         <button onclick="chQty(1)">+</button>
       </div>
-      <button class="btn" onclick="addToCart(prod.id, parseInt(document.getElementById('qty').value))">Dodaj do koszyka 🐾</button>
+      <button class="btn" onclick="addToCart(prod.id, parseInt(document.getElementById('qty').value))">${T("Dodaj do koszyka 🐾","Add to cart 🐾")}</button>
     </div>
     <div class="accordion">
       <details class="acc-item" open>
-        <summary>Skład</summary>
-        <div class="acc-body">${prod.ingredients}</div>
+        <summary>${T("Skład","Ingredients")}</summary>
+        <div class="acc-body">${_ing}</div>
       </details>
       <details class="acc-item">
-        <summary>Sposób użycia</summary>
-        <div class="acc-body">${prod.usage}</div>
+        <summary>${T("Sposób użycia","How to use")}</summary>
+        <div class="acc-body">${_use}</div>
       </details>
       <details class="acc-item">
-        <summary>Dostawa i zwroty</summary>
-        <div class="acc-body">Wysyłka w 24 h (InPost, kurier). Darmowa dostawa od 149 zł. Masz 14 dni na zwrot bez podawania przyczyny.</div>
+        <summary>${T("Dostawa i zwroty","Shipping & returns")}</summary>
+        <div class="acc-body">${T("Wysyłka w 24 h (InPost, kurier). Darmowa dostawa od 149 zł. Masz 14 dni na zwrot bez podawania przyczyny.","Shipped within 24 h (InPost, courier). Free delivery over 149 zł. 14 days to return, no reason needed.")}</div>
       </details>
     </div>
   </div>`;
