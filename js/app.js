@@ -74,7 +74,7 @@ function productCard(p){
 
 function renderGrid(elId, list){
   const el = document.getElementById(elId);
-  if(el) el.innerHTML = list.map(productCard).join("");
+  if(el) el.innerHTML = list.filter(p=>!p.hidden).map(productCard).join("");
 }
 
 /* =========================================================
