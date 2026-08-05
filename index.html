@@ -164,8 +164,8 @@
   <div class="container">
     <h2>Dołącz do sfory 🐕</h2>
     <p>Zapisz się i odbierz <b>-10%</b> na pierwsze zamówienie + porady pielęgnacyjne raz w miesiącu.</p>
-    <form class="nl-form" onsubmit="event.preventDefault();toast('Dziękujemy za zapis! 🐾');this.reset();">
-      <input type="email" placeholder="Twój adres e-mail" required>
+    <form class="nl-form" id="nl-form">
+      <input type="email" name="email" placeholder="Twój adres e-mail" required>
       <button class="btn" type="submit">Zapisuję się</button>
     </form>
   </div>
@@ -212,5 +212,18 @@
 <script src="js/products.js"></script>
 <script src="js/app.js"></script>
 <script>renderGrid("home-grid", PRODUCTS);</script>
+<script>
+document.getElementById("nl-form").addEventListener("submit", async (e)=>{
+  e.preventDefault();
+  const form=e.target; if(!form.reportValidity()) return;
+  const email=(form.querySelector('input[type=email]').value||'').trim();
+  try{
+    const res=await fetch("https://formsubmit.co/ajax/agathamwangemi06@gmail.com",{method:"POST",headers:{"Content-Type":"application/json","Accept":"application/json"},body:JSON.stringify({_subject:"Nowy zapis do newslettera — Esencja Pet Care",_template:"table",_captcha:"false","Newsletter":email,email:email})});
+    const out=await res.json();
+    if(!res.ok || !(out.success===true||out.success==="true")) throw new Error("x");
+    form.reset(); toast(T("Dziękujemy za zapis! 🐾","Thanks for subscribing! 🐾"));
+  }catch(err){ toast(T("Nie udało się zapisać 😿","Could not subscribe 😿")); }
+});
+</script>
 </body>
 </html>
