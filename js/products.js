@@ -101,8 +101,8 @@ const PRODUCTS = [
     "name": "Puppy Shampoo Extra Sensitive",
     "namePl": "Szampon dla szczeniąt — bardzo delikatny",
     "category": "kapiel",
-    "price": 49,
-    "volume": "250 ml",
+    "price": 51,
+    "volume": "260 ml",
     "badge": "Dla szczeniąt",
     "badgeClass": "green",
     "img": "assets/img/puppy-shampoo.png",
@@ -125,8 +125,8 @@ const PRODUCTS = [
       "Vegan product",
       "Fragrance-free"
     ],
-    "usageEn": "Gently massage into wet fur. Rinse and repeat if needed. Suitable for frequent use.",
-    "ingredientsEn": "INCI: Aqua, Disodium Cocoyl Glutamate, Sodium Olivoyl Glutamate, Glycerin, Cellulose Gum, Lauryl Glucoside, Sodium Chloride, Sodium Gluconate, Caprylyl Glycol, Glyceryl Caprylate, Dipropylene Glycol, Ethyl Lauroyl Arginate HCl, Calendula Officinalis Flower Extract, Avena Sativa (Oat) Kernel Extract, Sodium Benzoate, Potassium Sorbate, Citric Acid."
+    "ingredientsEn": "INCI: Aqua, Disodium Cocoyl Glutamate, Sodium Olivoyl Glutamate, Glycerin, Cellulose Gum, Lauryl Glucoside, Sodium Chloride, Sodium Gluconate, Caprylyl Glycol, Glyceryl Caprylate, Dipropylene Glycol, Ethyl Lauroyl Arginate HCl, Calendula Officinalis Flower Extract, Avena Sativa (Oat) Kernel Extract, Sodium Benzoate, Potassium Sorbate, Citric Acid.",
+    "usageEn": "Gently massage into wet fur. Rinse and repeat if needed. Suitable for frequent use."
   },
   {
     "id": "paw-cleaning-foam",
